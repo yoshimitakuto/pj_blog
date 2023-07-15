@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+{% block main %}
+<h2>新規投稿</h2>
+<form method="post">
+    <!-- djangoでフォームを使用する際にセキュリティ上必要なおまじない -->
+    {% csrf_token %}
+    <!-- ユーザーが入力するフォームを自動的に生成 -->
+    {{ form.as_p }}
+    <!-- 投稿ボタン -->
+    <input type="submit" value="投稿" class="'btn btn-info btn-sm">
+</form>
+{% endblock %}
