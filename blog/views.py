@@ -20,3 +20,16 @@ class Create(CreateView):
     
     # 上記のモデルのうちユーザーに編集させるカラムを指定する。
     fields = ['title', 'body', 'category', 'tags']
+    
+from django.views.generic.edit import UpdateView
+
+class Update(UpdateView):
+    model = Post
+    fields = ['title', 'body', 'category', 'tags']  
+    
+from django.views.generic.edit import DeleteView
+
+class Delete(DeleteView):
+    model = Post
+    # 削除成功した後のリダイレクト先
+    success_url = '/'      
