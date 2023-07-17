@@ -1,4 +1,5 @@
 # ListViewとDetailViewを取り込み
+from django.http import HttpResponse
 from django.views.generic import ListView, DetailView
 from .models import Post
 
@@ -33,3 +34,24 @@ class Delete(DeleteView):
     model = Post
     # 削除成功した後のリダイレクト先
     success_url = '/'      
+    
+    
+from django.views.generic.edit import FormView
+from . import forms
+ 
+class IndexForm(FormView):
+    form_class = forms.TextForm
+    template_name = 'blog/index_form.html'
+    
+    def form_valid(self, form):
+        data = form.cleaned_data
+        text = data['text']
+        search = data['search']
+        replace = data['replace'] 
+        
+        new_text = text.replace(search, replace)
+        
+        # get_context_dataでhtmlにデータを渡すパラメータが作成できる。
+        ctxt = self.get_context_data(new_text=new_text, form=form)
+        # 生成したcontextをhtmlに渡して、それをユーザーに返すための処理。
+        return self.render_to_response(ctxt)

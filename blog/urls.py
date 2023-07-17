@@ -10,4 +10,5 @@ urlpatterns = [
     path('create/', views.Create.as_view(), name="create"),
     path('update/<pk>/', views.Update.as_view(), name="update"),
     path('delete/<pk>/', views.Delete.as_view(), name="delete"),
+    path('index_form/', views.IndexForm.as_view(), name='IndexForm'),
 ]

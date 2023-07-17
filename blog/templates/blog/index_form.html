@@ -1,0 +1,24 @@
+{% extends 'blog/base.html' %}
+{% block main %}
+<div class="container">
+    <h2>入力置換</h2>
+    <div class="row mt-3">
+        <div class="col">
+            <h4>変換前</h4>
+            <form method="post">
+                <!-- djangoでフォームを使用する際にセキュリティ上必要なおまじない -->
+                {% csrf_token %}
+                <!-- ユーザーが入力するフォームを自動的に生成 -->
+                {{ form.as_p }}
+                <input type="submit" value="置換" class="btn btn-danger btn-sm">
+            </form>
+        </div>
+        <div class="col">
+            <h4>変換後</h4>
+            {{ new_text }}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
