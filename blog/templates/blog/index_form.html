@@ -1,5 +1,13 @@
 {% extends 'blog/base.html' %}
 {% block main %}
+
+<!-- エラー分をfor文で繰り返し表示 -->
+{% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endfor %}
+
 <div class="container">
     <h2>入力置換</h2>
     <div class="row mt-3">
@@ -8,8 +16,13 @@
             <form method="post">
                 <!-- djangoでフォームを使用する際にセキュリティ上必要なおまじない -->
                 {% csrf_token %}
-                <!-- ユーザーが入力するフォームを自動的に生成 -->
-                {{ form.as_p }}
+                <!--as_pを使用するとformのlabel/form/error分の３つが自動的に生成されてしまうためエラー文設定の際は以下のように記述をする-->
+                {% for field in form %}
+                <p>
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                </p>
+                {% endfor %}
                 <input type="submit" value="置換" class="btn btn-danger btn-sm">
             </form>
         </div>
