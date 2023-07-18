@@ -1,5 +1,7 @@
 {% extends 'blog/base.html' %}
 {% block main %}
+<h1>こんにちわ{{ user }}さん</h1>
+
 <h2>記事一覧</h2>
 <ol>
     {% for post in object_list %}
@@ -8,4 +10,6 @@
 </ol>
 <p><a href='{% url "create" %}'>新規投稿</a></p>
 <p><a href='{% url "IndexForm" %}'>置換機能</a></p>
+
+<p><a href="{% url 'logout' %}">ログアウト</a></p>
 {% endblock %}

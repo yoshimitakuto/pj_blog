@@ -1,9 +1,10 @@
 from django.urls import path
-
 from . import views
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
-    path('', views.Index.as_view(), name="index"),
+    path('', login_required(views.Index.as_view()), name="index"),
     
     # <pk>にPostのIDを渡すと表示される。
     path('detail/<pk>/', views.Detail.as_view(), name="detail"),
@@ -11,4 +12,9 @@ urlpatterns = [
     path('update/<pk>/', views.Update.as_view(), name="update"),
     path('delete/<pk>/', views.Delete.as_view(), name="delete"),
     path('index_form/', views.IndexForm.as_view(), name='IndexForm'),
+    
+
+    # ログインビュー用のURLパターン
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
