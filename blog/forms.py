@@ -2,6 +2,30 @@ from typing import Any, Dict
 from django import forms
 from django.core.exceptions import ValidationError
 
+# UserCreateFormは、djangoがもともと用意している新規登録フォーム
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
+from django.conf import settings
+
+# 通常であれば「from .models import User」でUserモデルを取得するが、
+# userモデルを取得する際は「get_user_model」を使用して取得するようにする必要がある。
+User = get_user_model()
+
+
+class SignUpForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")
+
+    def save(self, commit=True):
+        # commit=Falseだと、DBに保存されない
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        user.save()
+        return user
+
+
 # html側に自分が独自で作ったテキストを渡すためにはwidgetを独自で定義する必要がある。
 widget_textarea = forms.Textarea(
     attrs= {

@@ -1,7 +1,13 @@
 from django.db import models
 from django.urls import reverse_lazy
+# ユーザー作成に必要な記述
+from django.contrib.auth.models import AbstractUser
 
 
+class User(AbstractUser):
+    email = models.EmailField('メールアドレス', unique=True)
+    
+    
 class Category(models.Model):
     name = models.CharField(
         max_length=255,
