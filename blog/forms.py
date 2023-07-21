@@ -2,6 +2,11 @@ from typing import Any, Dict
 from django import forms
 from django.core.exceptions import ValidationError
 
+# 認証メール送信用のインポート文
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
 # UserCreateFormは、djangoがもともと用意している新規登録フォーム
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
@@ -11,6 +16,20 @@ from django.conf import settings
 # 通常であれば「from .models import User」でUserモデルを取得するが、
 # userモデルを取得する際は「get_user_model」を使用して取得するようにする必要がある。
 User = get_user_model()
+
+# メールの内容を作成
+subject = "登録確認"
+message_template = """"
+ご登録ありがとうございます。
+以下URLをクリックして登録を完了してください。
+
+"""
+
+# URLを生成する関数を作成
+def get_activate_url(user):
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    return settings.FRONTEND_URL + '/activate/{}/{}/'.format(uid, token)
 
 
 class SignUpForm(UserCreationForm):
