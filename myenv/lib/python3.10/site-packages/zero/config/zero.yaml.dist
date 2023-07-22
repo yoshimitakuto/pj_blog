@@ -1,0 +1,17 @@
+# Zero user configuration. This file allows users to override the default settings
+# used in Zero.
+#
+# Strings starting with '#' are comments.
+
+distributed_with: 0.8.0
+
+# Example of overriding plot options:
+#plot:
+#  # Default plot size, in inches.
+#  size_x: 10
+#  size_y: 8
+#
+#  # Default plot options. These are only used if the corresponding parameter is not directly
+#  # specified.
+#  alpha: 0.5
+#  linestyle: -.

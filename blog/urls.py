@@ -6,6 +6,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
                                       PasswordResetConfirmView, PasswordResetCompleteView
 
 urlpatterns = [
+    path('signup/', views.SignUpView.as_view(), name='signup'),
     path('', login_required(views.Index.as_view()), name="index"),
     
     # <pk>にPostのIDを渡すと表示される。

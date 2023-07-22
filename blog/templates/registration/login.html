@@ -2,4 +2,5 @@
 {% block main %}
 <h2>ログイン</h2>
 {% include 'blog/_form.html' with submit_label='ログイン' %}
+<a href="{% url 'signup' %}">サインアップ</a>
 {% endblock %}

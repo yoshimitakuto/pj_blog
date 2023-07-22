@@ -1,0 +1,1 @@
+# python(django)を使用Blogアプリ作成。

@@ -1,7 +1,16 @@
 # ListViewとDetailViewを取り込み
-from django.http import HttpResponse
 from django.views.generic import ListView, DetailView
 from .models import Post
+
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from .forms import SignUpForm
+
+class SignUpView(CreateView):
+    form_class = SignUpForm
+    # 新規登録に成功した後のリダイレクト先
+    success_url = reverse_lazy('login')
+    template_name = 'blog/signup.html'
 
 # ListViewは一覧を簡単に作るためのView
 class Index(ListView):

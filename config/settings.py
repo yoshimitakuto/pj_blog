@@ -129,3 +129,8 @@ LOGOUT_REDIRECT_URL = '/login/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# AUTH_USER_MODELはプロジェクト全体で使用するユーザーで、blog.Userがblogアプリの中のmodels.pyのUserというモデルを参照
+AUTH_USER_MODEL = 'blog.User'
+
+FRONTEND_URL = 'http://127.0.0.1:8000/'

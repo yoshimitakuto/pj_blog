@@ -1,0 +1,3 @@
+[console_scripts]
+zero = zero.__main__:cli
+
