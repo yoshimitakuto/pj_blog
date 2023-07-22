@@ -1,16 +1,26 @@
 # ListViewとDetailViewを取り込み
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from .models import Post
 
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
-from .forms import SignUpForm
+from .forms import SignUpForm, activate_user
 
 class SignUpView(CreateView):
     form_class = SignUpForm
     # 新規登録に成功した後のリダイレクト先
     success_url = reverse_lazy('login')
     template_name = 'blog/signup.html'
+    
+class ActivateView(TemplateView):
+    template_name = 'registration/activate.html'
+    
+    def get(self, request, uidb64, token, *args, **kwargs):
+        # 認証トークンを検証
+        result = activate_user(uidb64, token)
+        # コンテクストのresultにTrue/Falseの結果を返す
+        # 以下はTemplateViewそのもののgetに値を渡している。
+        return super().get(request, result=result, **kwargs)   
 
 # ListViewは一覧を簡単に作るためのView
 class Index(ListView):
