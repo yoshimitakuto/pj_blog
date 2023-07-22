@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'anymail',
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# 以下はターミナルにメッセージが送信される使用のため実際のメアドへ送信する場合はコメントアウトもしくは削除
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGIN_URL ='/login/'
@@ -134,3 +136,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'blog.User'
 
 FRONTEND_URL = 'http://127.0.0.1:8000/'
+
+ANYMAIL = {
+    "MAILGUN_API_KEY": '103278aa2c9a212ef84250f2a5acb1c2-c30053db-b5c6e6c3',
+    "MAILGUN_SENDER_DOMAIN": 'sandbox3f8ccde9d08e443da3ca9754e3e8d20b.mailgun.org',
+}
+# メールガンのバックエンドを使用する
+EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
+
+# 送信元をユーザーに表示するメアドの設定。
+DEFAULT_FROM_EMAIL = 'yocchantaku0127@gmail.com'
+# システムやサーバーに不具合が発生した際に管理者に送られる送信元のメアド（ユーザーには表示されない）
+SERVER_EMAIL = 'server@example.com'
