@@ -59,6 +59,13 @@ class Post(models.Model):
     tags = models.ManyToManyField(
         Tag,
         blank=True)
+    
+    """"
+     「公開・非公開設定」
+    本番運用中に後から下記の設定を行わないと、既存のpostに対して公開なのか非公開なのかdjangoが判定できず、
+    migration errorの原因につながるため以下の記述でdefault=Trueにする必要がある。
+    """
+    published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

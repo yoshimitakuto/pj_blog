@@ -1,5 +1,8 @@
+from typing import Any, List, Optional, Tuple
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
 from . import models
 
 
@@ -13,9 +16,77 @@ class TagAdmin(admin.ModelAdmin):
     pass
 
 
+# 自作フィルター検索機能
+class PostTitleFilter(admin.SimpleListFilter):
+    title = '本文'
+    parameter_name = 'body_contains'
+    
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(body__icontains=self.value())
+        return queryset
+    
+    # 実際に画面上に表示されるもの　(('開発'→self.value(), '「開発」を含む'→画面に表示))
+    def lookups(self, request, model_admin):
+        return [
+            ('開発', '「開発」を含む'),
+            ('日記', '「日記」を含む'),
+            ('個人', '「個人」を含む'),
+        ]    
+
+
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'title', 'category', 'tags_summary', 'published', 'created', 'updated')
+    """"
+    「N+1」問題解消（ForeignKey）
+    
+    タプル形式で記述しているため（'',）とする必要がある。
+    以下は外部キー設定をしているモデルの場合に記述をする必要がある。
+    →理由：DBへのアクセス回数を減らすため。
+    具体的には、list_displayで1回目のDBアクセスが走るが以下の設定を行わないと、それぞれのPostに対して、
+    外部キーを一回一回参照しにいく必要があるためDBへの負荷が増える
+    
+    以下はforeign_keyフィールドの時のみ使用可能
+    """
+    list_select_related = ('category',)
+    # 一覧表示画面から編集を可能にするための記述
+    list_editable = ('title', 'category')
+    # 検索機能
+    search_fields = ('title', 'category__name', 'tags__name', 'created', 'updated')
+    # 表示順設定：djangoはもともと昇順設定のため、「-」をつけることで降順に設定できる。
+    # 「（）」ないの記述順序は最初の指定したもので降順表示、同じだった場合、次に記述したものの降順表示を適用という意味で記述をしている。
+    ordering = ('-updated', '-created')
+    list_filter = (PostTitleFilter, 'category', 'tags', 'created', 'updated')
+    actions = ('publish', 'unpublish')
+    
+    def tags_summary(self, obj):
+        # それぞれの投稿につけられているタグ全てを「aq」へ入れて
+        aq = obj.tags.all()
+        # 文字列に変換して「,」で区切ってつなげたものを「label」に格納する
+        label = ','.join(map(str, aq))
+        return label
+    
+    # 画面上で「tags_summary」を「tags」に変更するための記述。
+    tags_summary.short_description = 'tags'
+    
+    
+    # many to many　問題の解消用（ManyToManyField）
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # タグ一覧に対して事前にリロードをしておく
+        return qs.prefetch_related('tags')
+    
+    def publish(self, request, queryset):
+        queryset.update(published=True)
+     
+    publish.short_description = '公開する'
+    
+    def unpublish(self, request, queryset):
+        queryset.update(published=False)
+     
+    unpublish.short_description = '下書きに戻す'  
+        
 
 
 @admin.register(models.User)
