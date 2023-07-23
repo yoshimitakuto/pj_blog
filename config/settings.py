@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
+from pathlib import Path, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,7 +56,10 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 以下のdirsに入力されたtemplatesフォルダーを最初に探しにいく
+        # 次にinstalled_appの中身を探しにいく
+        # djangoは同じURLがあった場合先に見つけたURLを表示する性質があるため
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,6 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+# 全体からstaticディレクトリを探す。パスはリストで設定をする
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # 以下はターミナルにメッセージが送信される使用のため実際のメアドへ送信する場合はコメントアウトもしくは削除
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

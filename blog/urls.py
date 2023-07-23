@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .admin import mypage_site
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,\
                                       PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView,\
@@ -16,6 +17,9 @@ urlpatterns = [
     path('update/<pk>/', views.Update.as_view(), name="update"),
     path('delete/<pk>/', views.Delete.as_view(), name="delete"),
     path('index_form/', views.IndexForm.as_view(), name='IndexForm'),
+    
+    # admin.pyで作成したmypage_siteを表示するためのurlを設定
+    path('mypage/', mypage_site.urls),
     
 
     # ログインビュー用のURLパターン

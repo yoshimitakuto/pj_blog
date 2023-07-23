@@ -1,0 +1,18 @@
+<!-- 「base_site.html」はdjangoがもともと用意しているadmin専用のテンプレートファイル -->
+<!-- 継承先が「base.html」ではない理由は、github上で頻繁に更新が起こりサイトが崩れてしまう可能性があるため -->
+{% extends 'admin/base_site.html' %}
+
+<!-- ブロックの内容のみを変える -->
+{% block welcome-msg %}
+    <strong>{{ user }}</strong>
+{% endblock %}
+
+<!-- 追加の自作cssを読み込む際には以下必須 -->
+{% load static %}
+
+<!-- extrastyleがベースのHTMlを読み込んでいる -->
+{% block extrastyle %}
+    <!-- block.superをつけることで元々のファイルの最下部に追加するといったことが可能となる -->
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'base_site.css' %}"
+{% endblock %}
