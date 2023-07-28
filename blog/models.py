@@ -35,30 +35,43 @@ class Post(models.Model):
         auto_now_add=True,
         editable=False,
         blank=False,
-        null=False)
+        null=False,
+        verbose_name="作成日",
+        )
     
     updated = models.DateTimeField(
         auto_now=True,
         editable=False,
         blank=False,
-        null=False)
+        null=False,
+        verbose_name="最終更新日",
+        )
         
     title = models.CharField(
         max_length=255,
         blank=False,
-        null=False)
+        null=False,
+        verbose_name="タイトル",
+        )
         
     body = models.TextField(
         blank=True,
-        null=False)
+        null=False,
+        verbose_name="本文",
+        help_text="HTMLタグは使用できません。"
+        )
         
     category = models.ForeignKey(
         Category,
-        on_delete=models.CASCADE)
-        
+        on_delete=models.CASCADE,
+        verbose_name="カテゴリ",
+        )
+
     tags = models.ManyToManyField(
         Tag,
-        blank=True)
+        blank=True,
+        verbose_name="タグ",
+        )
     
     """"
      「公開・非公開設定」

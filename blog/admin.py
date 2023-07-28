@@ -5,17 +5,6 @@ from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
 from . import models
 
-
-@admin.register(models.Category)
-class CategoryAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(models.Tag)
-class TagAdmin(admin.ModelAdmin):
-    pass
-
-
 # 自作フィルター検索機能
 class PostTitleFilter(admin.SimpleListFilter):
     title = '本文'
@@ -33,10 +22,66 @@ class PostTitleFilter(admin.SimpleListFilter):
             ('日記', '「日記」を含む'),
             ('個人', '「個人」を含む'),
         ]    
+        
+
+class PostInline(admin.TabularInline):
+    # 表示するモデル
+    model = models.Post
+    # 編集するカラム
+    fields = ('title', 'body')
+    # 最終行で新たにポストを作成可能にする
+    extra = 1
+    
+@admin.register(models.Category)
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = [PostInline]
+    
+@admin.register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    pass
+
+
+from django import forms
+
+class PostAdminForm(forms.ModelForm):
+    class Meta:
+        labels = {
+            'title': 'ブログタイトル',
+            'name': '名前',
+        }
+        
+    def clean(self):
+        body = self.cleaned_data.get('body')
+        if '>' in body:
+            raise forms.ValidationError('HTMlタグは使用できません')
+    
 
 
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
+    # 個別表示専用
+    readonly_fields = ('created', 'updated')  # 読み取り専用
+    # fields = ('title', 'body', 'category', 'tags', 'published', 'created', 'updated')
+    fieldsets = [
+        (None, {'fields': ('title',)}),
+        ('コンテンツ', {'fields': ('body',)}),
+        ('分類', {'fields': ('category', 'tags')}),
+        ('メタ', {'fields': ('created', 'updated')}),
+    ]
+    # 以下が優先される
+    form = PostAdminForm
+    # manytomanyを指定して選択表示を見やすく
+    filter_horizontal = ('tags',)
+    
+    def save_model(self, request, obj, form, change):
+        print('before save')
+        super().save_model(request, obj, form, change)
+        print('after save')
+        
+    class Media:
+        js = ('post.js',)    
+    
+    # 以下以降はリスト
     list_display = ('id', 'title', 'category', 'tags_summary', 'published', 'created', 'updated')
     """"
     「N+1」問題解消（ForeignKey）
